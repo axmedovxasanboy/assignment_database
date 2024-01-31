@@ -1,86 +1,91 @@
-/* 
-///////////// Table creator queries /////////////
-
- CREATE TABLE Department (
+/*
+CREATE TABLE department (
     id SERIAL PRIMARY KEY,
-    department_name VARCHAR(100) NOT NULL,
+    name VARCHAR(100),
     location VARCHAR(100)
 );
 
-
-CREATE TABLE Instructor (
+CREATE TABLE instructor (
     id SERIAL PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    department_id INT REFERENCES Department(id),
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    department_id INTEGER,
     email VARCHAR(100) UNIQUE,
-    office_number VARCHAR(10)
-); 
+    office_number VARCHAR(10),
+    FOREIGN KEY (department_id) REFERENCES department(id)
+);
 
 
-CREATE TABLE Course (
+CREATE TABLE student (
     id SERIAL PRIMARY KEY,
-    course_name VARCHAR(100) NOT NULL,
-    department_id INT REFERENCES Department(id),
-    credits INT CHECK (Credits > 0),
-    description TEXT
-); 
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    date_of_birth DATE,
+    email VARCHAR(100) UNIQUE,
+    major_id INTEGER,
+    FOREIGN KEY (major_id) REFERENCES department(id)
+);
 
 
-CREATE TABLE Classroom (
+
+CREATE TABLE course (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    department_id INTEGER,
+    credits INT CHECK (credits > 0),
+    description TEXT,
+    FOREIGN KEY (department_id) REFERENCES department(id)
+);
+
+CREATE TABLE classroom (
     id SERIAL PRIMARY KEY,
     location VARCHAR(100),
-    capacity INT CHECK (Capacity > 0),
+    capacity INT CHECK (capacity > 0),
     equipment TEXT
 );
 
-
-CREATE TABLE Student (
+CREATE TABLE class (
     id SERIAL PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    date_of_birth DATE,
-    email VARCHAR(100) UNIQUE,
-    major_id INT REFERENCES Department(id)
-);
-
-
-CREATE TABLE Enrollment (
-    id SERIAL PRIMARY KEY,
-    student_id INT REFERENCES Student(id),
-    course_id INT REFERENCES Course(id),
-    enrollment_date DATE,
-    grade VARCHAR(2)
-);
-
-
-CREATE TABLE Class (
-    id SERIAL PRIMARY KEY,
-    course_id INT REFERENCES Course(id),
-    intructor_id INT REFERENCES Instructor(id),
+    course_id INTEGER,
+    instructor_id INTEGER,
     semester VARCHAR(10),
-    year INT CHECK (Year > 0),
+    year INT,
     schedule VARCHAR(50),
-    classroom_iD INT REFERENCES Classroom(id)
+    classroom_id INTEGER,
+    FOREIGN KEY (course_id) REFERENCES course(id),
+    FOREIGN KEY (instructor_id) REFERENCES instructor(id),
+    FOREIGN KEY (classroom_id) REFERENCES classroom(id)
 );
 
 
-CREATE TABLE Assignment (
+
+CREATE TABLE enrollment (
     id SERIAL PRIMARY KEY,
-    course_id INT REFERENCES Course(id),
-    title VARCHAR(100) NOT NULL,
+    student_id INTEGER,
+    course_id INTEGER,
+    enrollment_date DATE,
+    grade VARCHAR(2),
+    FOREIGN KEY (student_id) REFERENCES student(id),
+    FOREIGN KEY (course_id) REFERENCES course(id)
+);
+
+
+CREATE TABLE assignment (
+    id SERIAL PRIMARY KEY,
+    course_id INTEGER,
+    title VARCHAR(100),
     due_date DATE,
-    description TEXT
+    description TEXT,
+    FOREIGN KEY (course_id) REFERENCES course(id)
 );
 
-
-CREATE TABLE Grade (
+CREATE TABLE grade (
     id SERIAL PRIMARY KEY,
-    enrollment_id INT REFERENCES Enrollment(id),
-    assignment_id INT REFERENCES Assignment(id),
-    score FLOAT CHECK (Score >= 0),
-    feedback TEXT
+    enrollment_id INTEGER,
+    assignment_id INTEGER,
+    score FLOAT CHECK (score >= 0),
+    feedback TEXT,
+    FOREIGN KEY (enrollment_id) REFERENCES enrollment(id),
+    FOREIGN KEY (assignment_id) REFERENCES assignment(id)
 );
-
 */
-
